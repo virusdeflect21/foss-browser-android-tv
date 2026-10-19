@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Focus ring used as foreground of focusable icon buttons. It is transparent
+  while the view is not focused, so it never changes the resting look of a view.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <solid android:color="@android:color/transparent" />
+
+    <stroke
+        android:width="@dimen/tv_focus_stroke_width"
+        android:color="@color/tv_focus_ring" />
+
+    <corners android:radius="100dp" />
+
+</shape>

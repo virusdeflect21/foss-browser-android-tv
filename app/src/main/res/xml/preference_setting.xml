@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="@string/setting_title_ui">
+
+        <EditTextPreference
+            android:defaultValue="https://codeberg.org/Gaukler_Faun/FOSS_Browser/wiki"
+            android:icon="@drawable/icon_fav"
+            android:key="favoriteURL"
+            android:title="@string/setting_title_fav" />
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:icon="@drawable/icon_post"
+            android:key="urlForPosting"
+            android:summary="@string/dialog_postOnWebsiteHint"
+            android:title="@string/dialog_postOnWebsite" />
+
+        <de.baumann.browser.preferences.ListSwitchPreference
+            android:defaultValue="3"
+            android:entries="@array/setting_entries_tab"
+            android:entryValues="@array/setting_values_tab"
+            android:key="start_tab"
+            android:title="@string/setting_overView_onStart_title"
+            android:widgetLayout="@layout/preference_widget_checkbox"
+            app:listSwitchKey="start_tabStart"
+            app:listSwitchKeyDefaultValue="false"
+            app:useSimpleSummaryProvider="true"
+            tools:ignore="PrivateResource" />
+
+        <ListPreference
+            android:defaultValue="100"
+            android:entries="@array/setting_entries_font"
+            android:entryValues="@array/setting_values_font"
+            android:key="sp_fontSize"
+            android:title="@string/setting_title_font" />
+
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/setting_entries_theme"
+            android:entryValues="@array/setting_values_theme"
+            android:key="sp_theme"
+            android:title="@string/setting_theme" />
+
+        <!-- OPTIMIERT: Titel statt Summary genutzt für einheitliche CheckBoxPreferences -->
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="useDynamicColor"
+            android:title="@string/setting_title_dynColors" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="sp_close_browser_confirm"
+            android:title="@string/setting_title_confirm_exit" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="sp_close_tab_confirm"
+            android:title="@string/setting_title_confirm_tab_close" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="sp_reloadTabs"
+            android:title="@string/setting_summary_tabsReload" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="sp_restoreTabs"
+            android:title="@string/setting_summary_tabsRestore" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/setting_title_browser">
+
+        <Preference
+            android:icon="@drawable/icon_profile_standard"
+            android:key="settings_profile"
+            android:title="@string/setting_title_profiles_standard" />
+
+        <Preference
+            android:icon="@drawable/icon_menu_save"
+            android:key="edit_standard"
+            android:title="@string/setting_title_savedWebSites" />
+
+        <ListPreference
+            android:defaultValue="2"
+            android:entries="@array/setting_entries_search_engine"
+            android:entryValues="@array/setting_values_search_engine"
+            android:key="sp_search_engine"
+            android:title="@string/setting_title_search_engine" />
+
+        <!-- OPTIMIERT: widgetLayout für saubere Checkbox-Injektion gesetzt -->
+        <de.baumann.browser.preferences.EditTextSwitchPreference
+            android:key="sp_search_engine_custom"
+            android:title="@string/setting_title_searchEngine"
+            android:widgetLayout="@layout/preference_checkbox_widget"
+            app:editTextSwitchKey="searchEngineSwitch"
+            app:useSimpleSummaryProvider="true" />
+
+        <de.baumann.browser.preferences.EditTextSwitchPreference
+            android:key="sp_userAgent"
+            android:title="@string/setting_title_userAgent"
+            android:widgetLayout="@layout/preference_checkbox_widget"
+            app:editTextSwitchKey="userAgentSwitch"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            android:defaultValue="https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
+            android:entries="@array/setting_entries_adBlock"
+            android:entryValues="@array/setting_values_adBlock"
+            android:key="ab_hosts"
+            android:title="@string/setting_title_adblock" />
+
+    </PreferenceCategory>
+
+    <!-- OPTIMIERT: Fehlenden Titel ergänzt oder Platzhalter entfernt für saubere Abstände -->
+    <PreferenceCategory android:title="@string/app_name">
+
+        <Preference
+            android:key="settings_menu"
+            android:title="@string/setting_menu" />
+
+        <Preference
+            android:key="settings_filter"
+            android:title="@string/setting_filter" />
+
+        <Preference
+            android:key="settings_gesture"
+            android:title="@string/setting_gestures" />
+
+        <Preference
+            android:key="settings_data"
+            android:title="@string/setting_title_data" />
+
+        <Preference
+            android:key="settings_clear"
+            android:title="@string/menu_delete" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

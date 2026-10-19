@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Colour of the visible focus ring. Only the focused element is highlighted,
+  which keeps D-pad navigation easy to follow from 10 feet away.
+  Source: https://developer.android.com/design/ui/tv/guides/styles/focus-system
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:color="?attr/colorPrimary"
+        android:state_focused="true" />
+    <item
+        android:color="?attr/colorPrimary"
+        android:state_selected="true" />
+
+    <item android:color="@android:color/transparent" />
+
+</selector>

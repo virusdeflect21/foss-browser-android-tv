@@ -1,0 +1,20 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        // Pinned to the newest AGP supported by Android Studio 2025.3.4.
+        // AGP 9.3.2 is rejected at sync with:
+        // "The project is using an incompatible version (AGP 9.3.2) ... Latest supported version is AGP 9.2.0".
+        classpath 'com.android.tools.build:gradle:9.2.1'
+    }
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+        google()
+    }
+}

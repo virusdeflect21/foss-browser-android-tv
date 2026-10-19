@@ -1,0 +1,41 @@
+apply plugin: 'com.android.application'
+
+android {
+
+    compileSdk = 37
+    namespace = 'de.baumann.browser'
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    defaultConfig {
+        applicationId "de.baumann.browser"
+        minSdk 29
+        targetSdk 37
+
+        versionCode 159
+        versionName "24"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources = true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lint {
+        checkReleaseBuilds = false
+        disable 'MissingTranslation'
+    }
+}
+
+dependencies {
+    implementation 'com.google.android.material:material:1.14.0'
+    implementation 'androidx.preference:preference:1.2.1'
+    implementation 'androidx.webkit:webkit:1.17.0'
+    implementation 'androidx.documentfile:documentfile:1.1.0'
+}

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  List of the saved custom search engines ("search on this site" menu).
+  The dialog window itself is sized by HelperUnit.setupDialog(), so the list can fill it.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/redirects_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/tv_safe_margin_horizontal"
+        android:layout_marginEnd="@dimen/tv_safe_margin_horizontal"
+        android:clipToPadding="false"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp" />
+
+</RelativeLayout>

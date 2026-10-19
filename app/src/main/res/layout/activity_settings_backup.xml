@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:paddingStart="@dimen/tv_safe_margin_horizontal"
+    android:paddingEnd="@dimen/tv_safe_margin_horizontal"
+    android:paddingTop="@dimen/tv_safe_margin_vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:contentInsetStart="@dimen/tv_safe_margin_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:gravity="center">
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:visibility="gone"
+                android:layout_marginBottom="24dp"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="?attr/colorOutlineVariant">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/TextAppearance.Material3.TitleLarge"
+                        android:text="@string/setting_title_data"
+                        android:textAlignment="center"
+                        android:layout_marginBottom="24dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_backup_all"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginBottom="16dp"
+                        android:text="@string/setting_backup_sumSettings"
+                        android:textSize="16sp"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:gravity="start|center_vertical"
+                        app:icon="@drawable/icon_settings"
+                        app:iconGravity="start"
+                        android:maxLines="1"
+                        android:ellipsize="end" />
+
+                    <Button
+                        android:id="@+id/btn_backup_db"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginBottom="16dp"
+                        android:text="@string/title_appDatabase"
+                        android:textSize="16sp"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:gravity="start|center_vertical"
+                        app:icon="@drawable/icon_database"
+                        app:iconGravity="start"
+                        app:iconPadding="12dp"
+                        android:maxLines="1"
+                        android:ellipsize="end" />
+
+                    <Button
+                        android:id="@+id/btn_export_bookmarks"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:text="@string/album_title_bookmarks_html"
+                        android:textSize="16sp"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:gravity="start|center_vertical"
+                        app:icon="@drawable/icon_bookmark"
+                        app:iconGravity="start"
+                        app:iconPadding="12dp"
+                        android:maxLines="1"
+                        android:ellipsize="end" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="?attr/colorOutlineVariant">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/TextAppearance.Material3.TitleLarge"
+                        android:text="@string/settings_data_restore"
+                        android:textAlignment="center"
+                        android:layout_marginBottom="24dp" />
+
+                    <Button
+                        android:id="@+id/btn_restore_all"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginBottom="16dp"
+                        android:text="@string/setting_backup_sumSettings"
+                        android:textSize="16sp"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:gravity="start|center_vertical"
+                        app:icon="@drawable/icon_settings"
+                        app:iconGravity="start"
+                        app:iconPadding="12dp"
+                        android:maxLines="1"
+                        android:ellipsize="end" />
+
+                    <Button
+                        android:id="@+id/btn_restore_db"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginBottom="16dp"
+                        android:text="@string/title_appDatabase"
+                        android:textSize="16sp"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:gravity="start|center_vertical"
+                        app:icon="@drawable/icon_database"
+                        app:iconGravity="start"
+                        app:iconPadding="12dp"
+                        android:maxLines="1"
+                        android:ellipsize="end" />
+
+                    <Button
+                        android:id="@+id/btn_import_bookmarks"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:text="@string/album_title_bookmarks_html"
+                        android:textSize="16sp"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:gravity="start|center_vertical"
+                        app:icon="@drawable/icon_bookmark"
+                        app:iconGravity="start"
+                        app:iconPadding="12dp"
+                        android:maxLines="1"
+                        android:ellipsize="end" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

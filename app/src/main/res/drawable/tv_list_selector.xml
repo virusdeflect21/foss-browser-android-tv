@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Row highlight for ListView/GridView. The selector reacts to the focused state of
+  the list, which is how a D-pad highlights the currently selected row.
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:drawable="@drawable/tv_focus_ring_rect"
+        android:state_focused="true" />
+
+    <item android:drawable="@android:color/transparent" />
+
+</selector>

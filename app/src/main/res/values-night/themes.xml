@@ -1,0 +1,32 @@
+<resources>
+    <!-- Das rote AppTheme hier komplett löschen! Nur das hier bleibt: -->
+    <style name="AppTheme_wallpaper" parent="Theme.Material3.DynamicColors.DayNight">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <!-- TV: launcher (splash) animation colour and seamless activity transitions.
+             https://developer.android.com/training/tv/start/start -->
+        <item name="android:colorPrimary">@color/md_theme_primary</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+    </style>
+
+    <style name="AppTheme_wallpaper_day" parent="Theme.Material3.DynamicColors.Light">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <!-- TV: launcher (splash) animation colour and seamless activity transitions.
+             https://developer.android.com/training/tv/start/start -->
+        <item name="android:colorPrimary">@color/md_theme_primary</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+    </style>
+
+    <style name="AppTheme_wallpaper_night" parent="Theme.Material3.DynamicColors.Dark">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <!-- TV: launcher (splash) animation colour and seamless activity transitions.
+             https://developer.android.com/training/tv/start/start -->
+        <item name="android:colorPrimary">@color/md_theme_primary</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+    </style>
+</resources>

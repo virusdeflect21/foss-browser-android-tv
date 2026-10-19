@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  TV sizing. Overscan safe area: 5% margin = 48dp left/right and 27dp top/bottom.
+  Source: https://developer.android.com/design/ui/tv/guides/styles/layouts
+-->
+<resources>
+
+    <!-- Overscan safe area (5% of a 960x540dp MDPI layout) -->
+    <dimen name="tv_safe_margin_horizontal">48dp</dimen>
+    <dimen name="tv_safe_margin_vertical">27dp</dimen>
+
+    <!-- Visible focus ring. Needs to be readable from 10 feet away -->
+    <dimen name="tv_focus_stroke_width">2dp</dimen>
+
+    <!-- Bottom browser bar (address, tabs, menu) -->
+    <dimen name="tv_bottom_bar_height">80dp</dimen>
+    <dimen name="tv_bottom_bar_corner_radius">40dp</dimen>
+
+    <!-- Remote friendly icon buttons (>= 48dp focus target) -->
+    <dimen name="tv_icon_button_size">56dp</dimen>
+    <dimen name="tv_icon_size">28dp</dimen>
+
+    <!-- Dialogs: keep them inside the safe area and centred like a TV overlay -->
+    <dimen name="tv_dialog_horizontal_margin">60dp</dimen>
+    <dimen name="tv_dialog_vertical_margin">27dp</dimen>
+
+    <!-- List rows: taller than on a phone so that the focus ring is easy to see -->
+    <dimen name="tv_list_row_height">72dp</dimen>
+    <dimen name="tv_list_row_corner_radius">12dp</dimen>
+
+    <!-- Remote mouse pointer: big enough to be seen from the couch, small enough to aim -->
+    <dimen name="tv_cursor_size">24dp</dimen>
+
+</resources>
