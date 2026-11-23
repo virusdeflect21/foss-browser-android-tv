@@ -22,8 +22,11 @@ settings, backups, …) plus the TV adaptation:
 - **Remote mouse pointer** — the D-pad moves a mouse cursor over the screen,
   OK/center is a real left click:
   - tap = click at the pointer position,
-  - press and hold = the click stays down (long press, context menu, text selection),
-  - hold and move = drag,
+  - a stationary hold through the long-press timeout = the current page's actions
+    menu (overflow) opens; the synthetic click is cancelled, so releasing does not
+    click through,
+  - hold and move = drag (starting to move before the long-press timeout cancels
+    the menu timer),
   - pages receive real mouse hover events.
 - **Edge scrolling** — push the pointer to the very top of the screen, or to the free
   strip at the very bottom below the browser bar, to scroll the page. The browser bar

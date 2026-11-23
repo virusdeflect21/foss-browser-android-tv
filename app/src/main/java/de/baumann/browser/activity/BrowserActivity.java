@@ -51,6 +51,7 @@ import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.view.Window;
@@ -232,6 +233,11 @@ public class BrowserActivity extends AppCompatActivity implements BrowserControl
     private boolean tvCursorImeVisible;
     private int tvCursorScrollDelta = 0;
     private long tvCursorDownTime = 0;
+    // TV: holding the OK/Enter button opens the page actions menu (tvLongPressRunnable).
+    // tvLongPressPending is true while the timeout is posted, tvLongPressFired is true once
+    // the menu was opened for the current press (the release must then not click through).
+    private boolean tvLongPressPending = false;
+    private boolean tvLongPressFired = false;
 
     // TV: directions currently held on the remote. While at least one is held, a 60 fps
     // timer moves the pointer continuously (with acceleration). This is what makes the
@@ -556,7 +562,12 @@ public class BrowserActivity extends AppCompatActivity implements BrowserControl
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (!hasFocus && tvCursorPressed) cancelTvCursorPress();
+        if (!hasFocus) {
+            // A dialog or another window took the keys: drop a pending long press and a
+            // held click, their key up events may never reach this activity again.
+            cancelTvLongPress();
+            if (tvCursorPressed) cancelTvCursorPress();
+        }
         updateTvCursorVisibility();
         updateTvCursorScroll();
     }
@@ -590,6 +601,7 @@ public class BrowserActivity extends AppCompatActivity implements BrowserControl
 
     @Override
     public void onDestroy() {
+        cancelTvLongPress();
         tvCursorHandler.removeCallbacksAndMessages(null);
         DeleteUtils.checkAndExecuteAutoDelete(getApplicationContext());
         NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
@@ -1226,8 +1238,9 @@ public class BrowserActivity extends AppCompatActivity implements BrowserControl
     // tvCursorMoveRunnable), so the movement is smooth instead of jumping per key repeat.
     // OK is a real left click:
     //   * tap              -> click at the pointer position
-    //   * press and hold   -> the touch stays down, so the long press of the page fires
-    //                         (text selection, link/image context menu, ...)
+    //   * press and hold   -> the current page's actions menu opens (showOverflow, see
+    //                         tvLongPressRunnable); the synthetic touch is cancelled first,
+    //                         so the page gets no long click and the release no click
     //   * hold and move    -> drag, for example to select text or to drag the page
     // Touching the very top or the very bottom screen edge scrolls the page until the
     // pointer leaves the edge again; the browser bar and its buttons never scroll.
@@ -1457,6 +1470,10 @@ public class BrowserActivity extends AppCompatActivity implements BrowserControl
                 if (action == KeyEvent.ACTION_DOWN) {
                     // Also called for the repeated events of a held key (every ~50 ms); the
                     // direction is simply kept pressed.
+                    // TV: moving the pointer while the button is held is a drag, not a menu:
+                    // the first direction cancels the pending long-press timeout and the
+                    // existing drag path below continues unchanged.
+                    if (tvCursorPressed) cancelTvLongPress();
                     boolean wasIdle = tvCursorDirections == 0;
                     tvCursorDirections |= direction;
                     if (wasIdle) {
@@ -1485,13 +1502,22 @@ public class BrowserActivity extends AppCompatActivity implements BrowserControl
             case KeyEvent.KEYCODE_DPAD_CENTER:
             case KeyEvent.KEYCODE_ENTER:
             case KeyEvent.KEYCODE_NUMPAD_ENTER: {
-                // While the on-screen keyboard is up, Enter confirms the typed text in the
-                // keyboard / the page and must not be turned into a click.
-                if (keyCode == KeyEvent.KEYCODE_ENTER && tvCursorImeVisible) return false;
+                // While the on-screen keyboard is up, all center/Enter keys (D-pad center,
+                // Enter, Numpad Enter) belong to the keyboard / the page - confirming typed
+                // text, operating the IME - and must not be turned into a click or a menu.
+                if (tvCursorImeVisible) return false;
                 if (action == KeyEvent.ACTION_DOWN) {
+                    // Key repeats of a held button must not restart the press (and with it
+                    // the long-press timeout), only the first ACTION_DOWN counts.
                     if (event.getRepeatCount() == 0) pressTvCursor();
                 } else if (action == KeyEvent.ACTION_UP) {
+                    // A short press stays a normal click: the pending long press is dropped
+                    // before the button is released. After a fired long press the press was
+                    // already cancelled, so nothing is dispatched here and the release
+                    // cannot click through.
+                    cancelTvLongPress();
                     releaseTvCursor();
+                    tvLongPressFired = false;
                 }
                 return true;
             }
@@ -1584,6 +1610,16 @@ public class BrowserActivity extends AppCompatActivity implements BrowserControl
     private void pressTvCursor() {
         if (tvCursorPressed || tvCursor == null || ninjaWebView == null) return;
         tvCursorPressed = true;
+        tvLongPressFired = false;
+        // TV: holding the button opens the page actions menu after the system long-press
+        // timeout (see tvLongPressRunnable). The runnable is posted before the ACTION_DOWN
+        // is dispatched: the page and the views under the pointer start their own
+        // long-press timers when they receive the ACTION_DOWN, and this one has to be
+        // ahead of them in the queue so that its ACTION_CANCEL suppresses all of them and
+        // the menu opens only once, from tvLongPressRunnable.
+        cancelTvLongPress();
+        tvLongPressPending = true;
+        tvCursorHandler.postDelayed(tvLongPressRunnable, ViewConfiguration.getLongPressTimeout());
         // TV: a click counts as using the remote. The call also wakes the pointer and reveals
         // the browser bar when the click is aimed at it - the touch is sent afterwards, so it
         // already hits the visible bar.
@@ -1605,11 +1641,44 @@ public class BrowserActivity extends AppCompatActivity implements BrowserControl
     }
 
     /**
+     * TV: holding the OK/Enter button for the system long-press timeout opens the current
+     * page's actions menu - the same overflow menu the menu button shows - at any pointer
+     * position. The synthetic touch is cancelled first (ACTION_CANCEL); the runnable was
+     * posted before the ACTION_DOWN was dispatched, so it runs ahead of every long-press
+     * timer that the touch started (page, browser bar, FABs) and cancels them: the menu
+     * opens exactly once, from here. The release of the key afterwards is swallowed as
+     * well (cancelTvCursorPress already cleared tvCursorPressed, so releaseTvCursor
+     * dispatches nothing): no click-through into the page behind the menu.
+     * Runs at most once per press (tvLongPressFired).
+     */
+    private final Runnable tvLongPressRunnable = new Runnable() {
+        @Override
+        public void run() {
+            tvLongPressPending = false;
+            if (!tvCursorPressed || tvLongPressFired || ninjaWebView == null) return;
+            tvLongPressFired = true;
+            cancelTvCursorPress();
+            showOverflow(null, null, 0, ninjaWebView.getTitle(), ninjaWebView.getUrl(), null, null, 0);
+        }
+    };
+
+    /**
+     * Drops a pending long-press timeout without opening the menu. Called when the key is
+     * released (short press = normal click), when a drag starts (direction key while the
+     * button is held), when the window loses the focus and on destroy.
+     */
+    private void cancelTvLongPress() {
+        tvLongPressPending = false;
+        tvCursorHandler.removeCallbacks(tvLongPressRunnable);
+    }
+
+    /**
      * Cancels a held click without a real button release. Needed when a dialog opens in the
      * middle of the press: the dialog takes the key events, so the following ACTION_UP never
      * reaches the web view and the press would stay stuck.
      */
     private void cancelTvCursorPress() {
+        cancelTvLongPress();
         if (!tvCursorPressed) return;
         tvCursorPressed = false;
         tvCursorScrollDelta = 0;

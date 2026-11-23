@@ -125,10 +125,15 @@ in `gradle.properties`.
   - OK / Enter is a real left click. The generated touch is dispatched to the
     window's decor view, so it works on the page **and** on the browser bar,
     the tabs button and the menu button — everything on screen.
-  - tap = click; press and hold = the touch stays down (page long press: text
-    selection, link/image menu); hold + move = drag (selection / page drag).
-  - While the on-screen keyboard is visible, Enter is passed through to the
-    keyboard/page instead of clicking.
+  - tap = click; a stationary hold through the long-press timeout = the current
+    page's actions menu (the overflow menu, `showOverflow(..., 0, ...)`) opens
+    once — the synthetic touch is cancelled, so the page gets no long click and
+    releasing the key does not click through; starting to move the pointer while
+    the key is held before that timeout cancels the menu timer, hold + move =
+    drag (selection / page drag).
+  - While the on-screen keyboard is visible, all center/Enter keys (D-pad
+    center, Enter, Numpad Enter) are passed through to the keyboard/page instead
+    of clicking or opening the menu.
   - The pointer is hidden while a dialog is open or the window is in the
     background; a click held while a dialog opens is cancelled, otherwise the
     page would keep a stuck pressed state.
@@ -153,13 +158,15 @@ in `gradle.properties`.
   appeared broken. As with a real wheel, the container under the pointer
   scrolls (inner scroll containers included).
 - **Remote substitutes for touch gestures**:
-  - `appBar` click = open search; hold OK over it = page menu.
-  - `fab_overview` click = overview; hold OK = configured gesture.
-  - `fab_menu` click = main menu; hold OK = configured gesture.
+  - `appBar` click = open search; hold OK = page actions menu — at any pointer
+    position (page, bar, FABs), the menu opens exactly once and the release
+    does not click through.
+  - `fab_overview` click = overview.
+  - `fab_menu` click = main menu.
   - `attachRemoteGestureKeys(view, prefix)` (direction-key mapping on the two
     FABs) is kept, but with the pointer owning the D-pad the FABs no longer
-    receive focus, so it is not reachable in practice; the long-press
-    gestures above still work through the pointer.
+    receive focus, so it is not reachable in practice; the per-button
+    long-press gestures are superseded by the page actions menu (hold OK).
 - **Web view focus**: the WebView keeps the D-pad focus while browsing (the
   activity intercepts the directions for the pointer before the web engine sees
   them, see `dispatchKeyEvent()`). Its focus listener
@@ -491,11 +498,11 @@ Run through this list on the emulator or a real TV; every item is manual
 - [ ] The pointer stops at the screen edges and is never clipped by the app.
 - [ ] Click a link on a web page → it opens.
 - [ ] Click a button / search field inside a web page (e.g. a search engine box) → it reacts; a text field opens the on-screen keyboard and typing goes into the field.
-- [ ] Hold OK over a paragraph → long press fires (text selection or the page's context menu); releasing ends it.
-- [ ] Hold OK and move the pointer → drag (selection extends / the page drags) instead of a click.
+- [ ] Hold OK stationary over the page through the long-press timeout → the page actions menu (overflow) opens exactly once; the page gets no long click and releasing OK does not click through.
+- [ ] Hold OK and start moving the pointer before the long-press timeout → the menu timer is cancelled and the move is a drag (selection extends / the page drags) instead of a click or menu.
 - [ ] Pointer close to the bottom edge (from the band above the bar down to the screen edge, including over the bar) → the page scrolls down continuously; pointer in the top band → the page scrolls up; moving the pointer out of the bands stops it; holding OK pauses it.
 - [ ] The pointer is hidden while a dialog is open and reappears after the dialog closes; a click held while a dialog opens does not stay stuck (the next click works normally).
-- [ ] With the on-screen keyboard visible, Enter confirms the text instead of clicking at the pointer.
+- [ ] With the on-screen keyboard visible, center/Enter (D-pad center, Enter, Numpad Enter) go to the keyboard/page instead of clicking at the pointer or opening the page actions menu.
 - [ ] Desktop-style page with hover menus: hover reacts to the pointer (best effort, see limitations).
 
 **Back button semantics**
@@ -504,8 +511,8 @@ Run through this list on the emulator or a real TV; every item is manual
 - [ ] Back closes any open dialog/menu first; focus afterwards is back on the page or the previous dialog.
 
 **Gestures (former swipes)**
-- [ ] Settings → Gestures: assign an action to a *long press* of the tabs button or the menu button, then hold OK over that button: the action runs.
-- [ ] The two corner buttons no longer take D-pad focus, so direction-key gesture mappings are not reachable (documented limitation); the long-press mappings above are.
+- [ ] Hold OK stationary anywhere (page, browser bar, a button) through the long-press timeout → the current page's actions menu opens exactly once; the synthetic touch is cancelled first, so no view long-press fires and releasing OK does not click through.
+- [ ] The two corner buttons no longer take D-pad focus, so direction-key gesture mappings are not reachable (documented limitation); their long-press gesture mappings are superseded by the page actions menu.
 
 **Overview dialog**
 - [ ] Tabs tab: each open tab row is focusable with focus ring; selecting switches to that tab; long press opens the tab menu (close, etc.).
@@ -615,8 +622,8 @@ documented as such in the code comments.
    app and Bluetooth remotes normally send proper down/up pairs.)
 5. **Direction-key gesture mappings are unreachable**: with the pointer owning
    the D-pad, the two FABs no longer receive focus, so
-   `attachRemoteGestureKeys()` cannot fire. The long-press gesture mappings of
-   both buttons still work (hold OK over the button).
+   `attachRemoteGestureKeys()` cannot fire. Holding OK over a button opens the
+   page actions menu instead of the button's long-press gesture mapping.
 6. **Edge scrolling is a synthetic mouse wheel**: the wheel event is
    dispatched at the pointer position, so Chromium scrolls the container under
    the pointer (inner scroll containers included). Sites with custom JS
